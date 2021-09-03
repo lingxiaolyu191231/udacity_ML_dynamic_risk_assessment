@@ -17,7 +17,7 @@ model_path = os.path.join(config['output_model_path'])
 
 
 #################Function for training the model
-def train_model():
+def train_model(dataset_csv_path, model_path):
     
     #use this logistic regression for training
     lr = LogisticRegression(C=1.0, class_weight=None, dual=False,      fit_intercept=True,intercept_scaling=1, l1_ratio=None,
@@ -40,5 +40,6 @@ def train_model():
 
     pickle.dump(lr, open(os.path.join(output_model_path, "trainedmodel.pkl"), "wb"))
     
+    return lr
 if __name__ == "__main__":
-    train_model()
+    train_model(dataset_csv_path, model_path)

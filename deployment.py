@@ -20,8 +20,12 @@ model_path = os.path.join(config['output_model_path'])
 output_model_path = os.path.join(os.getcwd(), model_path, "trainedmodel.pkl")
 model = pickle.load(open(output_model_path, "rb"))
 
+output_model_score = os.path.join(os.getcwd(), model_path, "latestscore.txt")
+with open(output_model_score, "r") as f:
+    scores = f.read()
+
 ####################function for deployment
-def store_model_into_pickle(model):
+def store_model_into_pickle(prod_deployment_path, model, dataset_csv_path):
     #copy the latest pickle file, the latestscore.txt value, and the ingestedfiles.txt file into the deployment directory
     
     prod_path = os.path.join(os.getcwd(), prod_deployment_path)
@@ -32,10 +36,6 @@ def store_model_into_pickle(model):
     pickle.dump(model, open(os.path.join(prod_path, "trainedmodel.pkl"), "wb"))
     
     # copy latestscore.txt
-    output_model_score = os.path.join(os.getcwd(), model_path, "latestscore.txt")
-    with open(output_model_score, "r") as f:
-        scores = f.read()
-    
     with open(os.path.join(prod_path, "latestscore.txt"), "w") as f:
         f.write(scores)
     
@@ -49,7 +49,7 @@ def store_model_into_pickle(model):
     
 
 if __name__ == "__main__":
-    store_model_into_pickle(model)
+    store_model_into_pickle(prod_deployment_path, model, dataset_csv_path)
     
         
         

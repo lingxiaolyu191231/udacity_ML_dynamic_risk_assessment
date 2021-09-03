@@ -35,7 +35,10 @@ def predict():
 @app.route("/scoring", methods=['GET','OPTIONS'])
 def scoring():
     #check the score of the deployed model
-    model_f1_score = score_model()
+    model_path = os.path.join(config['output_model_path'])
+    test_data_path = os.path.join(config['test_data_path'])
+    testdata = pd.read_csv(os.path.join(os.getcwd(), test_data_path, "testdata.csv"))
+    model_f1_score = score_model(model_path, testdata)
 
     return str(model_f1_score)
 

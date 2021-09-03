@@ -5,8 +5,8 @@ argon2-cffi              20.1.0   21.1.0   wheel
 atpublic                 1.0      2.3      sdist
 azure-core               1.17.0   1.18.0   wheel
 azure-storage-blob       12.6.0   12.8.1   wheel
-boto3                    1.17.106 1.18.35  wheel
-botocore                 1.20.106 1.21.35  wheel
+boto3                    1.17.106 1.18.36  wheel
+botocore                 1.20.106 1.21.36  wheel
 charset-normalizer       2.0.0    2.0.4    wheel
 cryptography             3.4.7    3.4.8    wheel
 decorator                4.4.2    5.0.9    wheel
@@ -31,6 +31,7 @@ jupyter-client           7.0.1    7.0.2    wheel
 jupyterlab               3.1.9    3.1.10   wheel
 jupyterlab-widgets       1.0.0    1.0.1    wheel
 kiwisolver               1.3.1    1.3.2    wheel
+more-itertools           8.8.0    8.9.0    wheel
 multimethod              1.4      1.5      wheel
 oss2                     2.6.1    2.15.0   sdist
 pandocfilters            1.4.2    1.4.3    sdist
@@ -39,6 +40,7 @@ Pillow                   8.3.1    8.3.2    wheel
 pluggy                   0.13.1   1.0.0    wheel
 portalocker              1.7.1    2.3.2    wheel
 py4j                     0.10.9   0.10.9.2 wheel
+PyDrive2                 1.9.1    1.9.2    wheel
 pygtrie                  2.3.2    2.4.2    sdist
 PyQt5                    5.12.3   5.15.4   wheel
 PyQt5_sip                4.19.18  12.9.0   wheel
@@ -46,6 +48,7 @@ PyQtChart                5.12     5.15.4   wheel
 PyQtWebEngine            5.12.1   5.15.4   wheel
 pyrsistent               0.17.3   0.18.0   wheel
 pytest                   6.2.4    6.2.5    wheel
+QtPy                     1.10.0   1.11.0   wheel
 rich                     10.7.0   10.9.0   wheel
 ruamel.yaml              0.17.13  0.17.16  wheel
 ruamel.yaml.clib         0.2.2    0.2.6    wheel

@@ -17,7 +17,7 @@ test_data_path = os.path.join(config['test_data_path'])
 model_path = os.path.join(config['prod_deployment_path'])
 
 ##################Function to get model predictions
-def model_predictions():
+def model_predictions(model_path, test_data_path):
     #read the deployed model and a test dataset, calculate predictions
     model = pickle.load(open(os.path.join(os.getcwd(), model_path, "trainedmodel.pkl"), "rb"))
     
@@ -99,7 +99,7 @@ def outdated_packages_list():
 
 
 if __name__ == '__main__':
-    model_predictions()
+    model_predictions(model_path, test_data_path)
     dataframe_summary()
     missing_values()
     execution_time()

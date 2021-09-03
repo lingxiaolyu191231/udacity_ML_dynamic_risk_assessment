@@ -1,0 +1,1 @@
+*/10 * * * * /Users/lingxiaolyu/Desktop/git/udacity_ML_dynamic_risk_assessment/fullprocess.py 
