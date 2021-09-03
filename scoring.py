@@ -34,7 +34,6 @@ def score_model(model_path, testdata):
 
     with open(os.path.join(os.getcwd(), model_path, "latestscore.txt"), "w") as f:
         f.write('F1 Score of Logistic Regression Model: ' +str(f1))
-    
     return f1
 
 if __name__ == "__main__":

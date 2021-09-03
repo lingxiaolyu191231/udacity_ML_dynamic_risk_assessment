@@ -20,20 +20,20 @@ with open('config_prod.json', 'r') as f:
 #first, read ingestedfiles.txt
 def check_new_data():
     with open(os.path.join(os.getcwd(), config['output_folder_path'], 'ingestedfiles.txt'), 'r') as f:
-        ingestedfiles = f.read()
-
+        ingestedfiles = f.readlines()
+    
         # load newd data files
     dir = os.path.join(os.getcwd(), config['input_folder_path'])
     filenames = os.listdir(dir)
     ingestedfiles = [ingestedfile.replace('\n','') for ingestedfile in ingestedfiles]
+    
     all_datafiles = list(set(filenames + ingestedfiles))
-
     #second, determine whether the source data folder has files that aren't listed in ingestedfiles.txt
     have_new_data = False
     if len(all_datafiles) > len(ingestedfiles):
         have_new_data = True
         
-    return have_new_data
+    return have_new_data, all_datafiles
 
 ##################Deciding whether to proceed, part 1
 #if new data found, you should proceed. otherwise, do end the process here
@@ -43,14 +43,14 @@ def check_new_data():
 
 def check_model_drift(new_df):
 
+    new_df = new_df.astype('category')
     latestscore_txt = os.path.join(os.getcwd(), config['prod_deployment_path'], "latestscore.txt")
-
+    
     with open(latestscore_txt, 'r') as f:
         prod_model_score = f.read()
 
-    prod_model_score = float(prod_model_score)
-    new_model_score = score_model(config['production_deployment'], new_df)
-
+    prod_model_score = float(prod_model_score.split(": ")[1])
+    new_model_score = score_model(config['prod_deployment_path'], new_df)
     ##################Deciding whether to proceed, part 2
     #if you found model drift, you should proceed. otherwise, do end the process here
     model_drift=False
@@ -63,13 +63,15 @@ def check_model_drift(new_df):
 ##################Upload-new-data
 def update_data():
 
+    _, all_datafiles = check_new_data()
+    
     outdated_finaldata = pd.read_csv(os.path.join(os.getcwd(), config['output_folder_path'], "finaldata.csv"))
 
     new_df = merge_multiple_dataframe(config['input_folder_path'], config['output_folder_path'])
-
+    
     new_final_df = outdated_finaldata.append(new_df, ignore_index=True)
     new_final_df.to_csv(os.path.join(os.getcwd(),config['output_folder_path'],"finaldata.csv"), index=False)
-
+    
     # update ingestedfiles.txt
     with open(os.path.join(os.getcwd(), config['output_folder_path'], 'ingestedfiles.txt'), 'w') as f:
         for filename in all_datafiles:
@@ -123,16 +125,22 @@ if __name__=="__main__":
     if not have_new_data:
         sys.exit()
     
+    print("Is there new data? ", have_new_data[0])
     # if new data found, update data
     new_final_df, new_df = update_data()
-
-    if not check_model_drift(new_df):
+    model_drift_found = check_model_drift(new_df)
+    print("Is model drift detected?", model_drift_found)
+    if not model_drift_found:
         sys.exit()
     
     # if model drift is detected, then redeploy model
+    print('Redeploying model....')
     redeploy_model()
+    print('Redeploying model Completed!')
     # and the plot confusion matrix and report api
+    print('Running diagostics and new reports....')
     diagnostics_reporting()
+    print('Diagostics and reporting Completed!')
     
     
     
