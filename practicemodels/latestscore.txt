@@ -1,0 +1,1 @@
+F1 Score of Logistic Regression Model: 0.5714285714285715

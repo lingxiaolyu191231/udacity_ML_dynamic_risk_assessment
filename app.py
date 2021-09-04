@@ -2,11 +2,10 @@ from flask import Flask, session, jsonify, request
 import pandas as pd
 import numpy as np
 import pickle
-import create_prediction_model
-import diagnosis 
-import predict_exited_from_saved_model
 import json
 import os
+from scoring import score_model
+from diagnostics import dataframe_summary, execution_time, missing_values
 
 
 
@@ -19,32 +18,46 @@ with open('config.json','r') as f:
 
 dataset_csv_path = os.path.join(config['output_folder_path']) 
 
-prediction_model = None
+prediction_model = pickle.load(open(os.path.join(os.getcwd(), config['prod_deployment_path'], "trainedmodel.pkl"), "rb"))
 
 
 #######################Prediction Endpoint
 @app.route("/prediction", methods=['POST','OPTIONS'])
 def predict():        
     #call the prediction function you created in Step 3
-    return #add return value for prediction outputs
+    inputdatapath = request.args.get("inputdata")
+    inputdata = pd.read_csv(inputdatapath)
+    X = inputdata[["lastmonth_activity", "lastyear_activity", "number_of_employees"]].values.reshape(-1,3)
+    preds = prediction_model.predict(X).tolist()
+    return str(preds)
 
 #######################Scoring Endpoint
 @app.route("/scoring", methods=['GET','OPTIONS'])
-def stats():        
+def scoring():
     #check the score of the deployed model
-    return #add return value (a single F1 score number)
+    model_path = os.path.join(config['output_model_path'])
+    test_data_path = os.path.join(config['test_data_path'])
+    testdata = pd.read_csv(os.path.join(os.getcwd(), test_data_path, "testdata.csv"))
+    model_f1_score = score_model(model_path, testdata)
+
+    return str(model_f1_score)
 
 #######################Summary Statistics Endpoint
 @app.route("/summarystats", methods=['GET','OPTIONS'])
 def stats():        
     #check means, medians, and modes for each column
-    return #return a list of all calculated summary statistics
+    summary_stat = dataframe_summary()
+
+    return str(summary_stat)
 
 #######################Diagnostics Endpoint
 @app.route("/diagnostics", methods=['GET','OPTIONS'])
-def stats():        
+def diagnostics():
     #check timing and percent NA values
-    return #add return value for all diagnostics
+    timing = execution_time()
+    missing_value = missing_values()
+    
+    return str((timing, missing_values))
 
 if __name__ == "__main__":    
     app.run(host='0.0.0.0', port=8000, debug=True, threaded=True)
